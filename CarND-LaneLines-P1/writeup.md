@@ -87,7 +87,7 @@ Another potential shortcoming varying sizes of the left and right lanes in the i
 
 ### 3. Improvements
 
-Though I have used HSV color space to identify yello and white lane lines, boosting image contrast and color prior to color masking could drastically reduce false positive candidates for canny edge detection.
+Though I have used HSV color space to identify yellow and white lane lines, boosting image contrast and color prior to color masking could drastically reduce false positive candidates for canny edge detection.
 
 Once I have changed the hoough lines to slope and interecept parameter space, a k means or dbscan clustering with 4 clusters could find better candidates for left or right lane aggregation as it would account for slope as well intercept while clustering candidates. 
 
