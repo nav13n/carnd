@@ -78,16 +78,21 @@ has max(x) or min(x) depending upon whether the line slope is positive or negati
 
 ### 2. Issues with the current pipeline
 
-One potential shortcoming would be what would happen when ... 
+Though pipeline worked great for most of the image frames, It had abberations in challenge video where there was more curvy patch of road, areas of shadows and objects that were considerabely lighter-colored than the rest of the road surface inside the region of interest. For example bridge with almost similar white color to lanes and light gray shadow of trees and other objects on lanes that made color masking masking a bit difficult. 
 
-Another shortcoming could be ...
+A potential issue is jittery and flickering lanes. Flicker of lane lines in image frame is mostly due to simplistic binning of hough lines in right and left lane candidates entirely based on a slope range. There are cases where lines returned from hough transformation step don't qualify for either lanes or qualify for just one of them e.g when line slope is close to vertical or horizontal line slope. In some case binning based on just slope also adds false positives(outliers in region of interest where slope is close to one of the left/right lane but intercept is different). In these cases there is no overlay
+of lines or wrong overlay in the image frame leading to flickering lane lines.
 
+Another potential shortcoming varying sizes of the left and right lanes in the image frame as I am using max(x) and min(x) of left and right lane candidates repectively to calculate the top end point of lane points. This works well in most of the cases except for the scenarios mentioned in flickering issue.  
 
 ### 3. Improvements
 
-A possible improvement would be to ...
+Though I have used HSV color space to identify yello and white lane lines, boosting image contrast and color prior to color masking could drastically reduce false positive candidates for canny edge detection.
 
-Another potential improvement could be to ...
+Once I have changed the hoough lines to slope and interecept parameter space, a k means or dbscan clustering with 4 clusters could find better candidates for left or right lane aggregation as it would account for slope as well intercept while clustering candidates. 
+
+Another potential improvement could be to use a rolling average of left and right lane lines across frames with a specific size and use any additional data obtained from new image frame to adjust slope and intercept. It would help in keeping left and right lane sizes more consistent. It woulds also reduce a flickering by providing more accurate lane lines based on historical data as well make for any left/right lanes detection missing in any image frame.
+
 
 
 
