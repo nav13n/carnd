@@ -201,7 +201,7 @@ My final model results were:
 * validation set accuracy of 0.953
 * test set accuracy of 0.938
 
-Dicussed above.
+Discussed above.
 ### Test a Model on New Images
 
 #### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
@@ -232,9 +232,4 @@ The code for making predictions on my final model is located in the 20th cell of
 A detailed view of top 5 softmax probabilities is as below:
 ![top5 softmax][image17] 
 ![top5 softmax][image18] 
-
-
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
-
 
