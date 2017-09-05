@@ -1,8 +1,3 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Vehicle Detection Project**
 
 The goals / steps of this project are the following:
@@ -33,7 +28,7 @@ The goals / steps of this project are the following:
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.
-The code used in this project is inside a jupyter notebook[here.](./CarND-Vehicle-Detection.ipnyb)
+The code used in this project is inside a jupyter notebook [here.](./CarND-Vehicle-Detection.ipnyb)
 
 ---
 ###Writeup / README
