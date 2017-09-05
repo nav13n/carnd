@@ -106,7 +106,7 @@ Ultimately I combined feature extraction and sliding window search under `combin
 The result of the pipeline on a test image is as follows.
      
 ![Sliding Window Combined][image7] 
-I didn't do anything specific to optimise the classifier at this stage as parameters itself were chosen based on accuracy and speed of the classifier in earlier stages. 
+I didn't do anything specific to optimise the classifier at this stage as parameters itself were chosen based on accuracy and speed of the classifier as mentioned in earlier stages. 
 
 ---
 
