@@ -53,12 +53,14 @@ Example: Binary Thresholded Mask:
 
 I then warped the image using`cv2.getPerspectiveTransform()` inside the ImageWarper class with following source and destination points
 to get a bird's eye view of the image 
+
+
 | Source        | Destination   |
 |:-------------:|:-------------:|
-| 260, 680      | 260, 720      |
-| 580, 460      | 260, 0        |
-| 700, 460      | 1020, 0       |
-| 1020, 680     | 260, 720      |
+|260, 680       |260, 720     |
+|580, 460       |260, 0       |
+|700, 460       |1020, 0      |
+|1020, 680      |260, 720     |
 
 An example of perspective transformation aplied to one of the images is as follows:
 ![alt text][image4]
