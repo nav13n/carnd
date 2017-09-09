@@ -15,10 +15,11 @@ The goals / steps of this project are the following:
 
 [image1]: ./examples/undistorted_checkerboard.png "Undistorted"
 [image2]: ./examples/undistorted.png "Undistorted Example Image"
-[image3]: ./examples/warped.png "Warped Image"
-[image4]: ./examples/polyfit.png "Polyfit"
-[image5]: ./examples/detected_lane.png "Detected Lane"
-[image6]: ./examples/final_output.png "Final Output"
+[image3]: ./examples/binary_thresholded.png "Binary Thresholded Image"
+[image4]: ./examples/warped.png "Warped Image"
+[image5]: ./examples/polyfit.png "Polyfit"
+[image6]: ./examples/detected_lane.png "Detected Lane"
+[image7]: ./examples/final_output.png "Final Output"
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -89,8 +90,8 @@ I also measured the position of the car in respect to the lane by computing the 
 I then created a polygon using the curves of each computed polyline and warped back the result using the reversed source and destination of step #3.
 I finally drew this polygon on the undistorted test image.(`draw_lane` method)
 
-
 ![alt text][image6]
+![alt text][image7]
 
 ---
 
