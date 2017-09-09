@@ -104,6 +104,6 @@ Here's a [link to my video result](./project_video_done.mp4)
 
 The implementation overall went pretty smoothly for the project video but It didn't do a lot well on the challenge videos. A lot of those failures are due to the extreme variations in lightening and colors of the roads in different environment.
 Given some luxury of time, I would like to  go back and make it more robust by handling more lightning conditions and lane line colors exploring different color spaces.  
-Another possible optimisation  would be keep track of previous few frames detections and use it to provide recovery options in no line is detected in current frame or if they differ too much from the previously detected lines.
-This project has compelled me to appreciate the previous deep learning approaches we used in classification and regression problems of this program much more as they are able to generalise better with varying environmental conditions.
-I wonder if I can make it more robust taking a neural network route.
+Another possible optimisation  would be to keep track of previous few frames detections and use it to provide recovery options in no line is detected in current frame or if they differ too much from the previously detected lines.
+finally, This project has compelled me to appreciate the previous deep learning approaches we used in classification and regression problems of this program much more as they are able to generalise better with varying environmental conditions.
+I wonder if I would be able more robust taking a neural network route.
