@@ -20,6 +20,8 @@ The goals / steps of this project are the following:
 [image5]: ./examples/polyfit.png "Polyfit"
 [image6]: ./examples/detected_lane.png "Detected Lane"
 [image7]: ./examples/final_output.png "Final Output"
+[image8]: ./examples/binary_thresholded1.png "Binary Thresholded Image 1"
+[image9]: ./examples/binary_thresholded2.png "Binary Thresholded Image 2"
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -46,9 +48,12 @@ Example: Distortion correction of test image
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at methods `dir_thresh`, `mag_thresh`,`color_thresh` ).
 I first applied a color filtering, keeping only white or yellow-ish pixels of the image. I then only kept pixels that either match a sufficient magnitude or direction threshold.
 
-Example: Binary Thresholded Mask:
+An example of binary threshold applied to test images is as follows:
 
-![alt text][image3]
+![alt text][image8]
+![alt text][image9]
+
+
 
 #### 3. Apply a perspective transform to get a  birds-eye view
 
