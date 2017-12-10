@@ -111,12 +111,6 @@ public:
     void UpdateRadar(MeasurementPackage meas_package);
 
     /**
-     * Generates Sigma Points.
-     * @param {MatrixXd*} Xsig_out
-     */
-    void GenerateSigmaPoints(MatrixXd* Xsig_out);
-
-    /**
      * Generates Augmented Sigma Points.
      * @param {MatrixXd*} Xsig_aug_out
      */
