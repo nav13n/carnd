@@ -1,6 +1,7 @@
 #include "ukf.h"
 #include "Eigen/Dense"
 #include <iostream>
+#define EPS 0.0001
 
 using namespace std;
 using Eigen::MatrixXd;
@@ -73,9 +74,25 @@ UKF::UKF() {
 
     // the current NIS for laser
     NIS_laser_ = 0.0;
+
+    //Initialise lidar measurement noise covariance matrix
+    R_laser_ = MatrixXd(2, 2);
+    R_laser_ << std_laspx_*std_laspx_, 0,
+                0, std_laspy_*std_laspy_;
+
+    //Initialise radar measurement noise covariance matrix
+    R_radar_ = MatrixXd(3, 3);
+    R_radar_ << std_radr_*std_radr_, 0,                                           0,
+                 0,                   std_radphi_*std_radphi_,                     0,
+                 0,                   0,                                           std_radrd_*std_radrd_;
 }
 
 UKF::~UKF() {}
+
+void NormalizeAngle(double& phi)
+{
+    phi = atan2(sin(phi), cos(phi));
+}
 
 /**
  * @param {MeasurementPackage} meas_package The latest measurement data of
@@ -97,6 +114,10 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
         // initialise timestamp
         time_us_ = meas_package.timestamp_;
 
+        // Initialise state covariance matrix.
+        P_ <<   MatrixXd::Identity(n_x_,n_x_);
+
+
         if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
 
             //set the state with the initial location and zero velocity
@@ -108,15 +129,6 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
             xi << p_x, p_y, v, si, si_dot;
             x_ = xi;
 
-            // Initialise state covariance matrix.
-            // Lower uncertainty for px and py states but greater uncertainty to v, si and si_dot
-            P_ <<   0.15,    0, 0, 0, 0,
-                    0, 0.15, 0, 0, 0,
-                    0,    0, 1000, 0, 0,
-                    0,    0, 0, 1000, 0,
-                    0,    0, 0, 0, 1000;
-
-
         }
         else if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
             /**
@@ -127,26 +139,18 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
             Convert radar from polar to cartesian coordinates and initialize state.
             */
 
-            float rho = meas_package.raw_measurements_[0];
-            float phi = meas_package.raw_measurements_[1];
-            float rho_dot = meas_package.raw_measurements_[2];
+            const float rho = meas_package.raw_measurements_[0];
+            const float phi = meas_package.raw_measurements_[1];
+            const float rho_dot = meas_package.raw_measurements_[2];
 
-            float p_x = rho * cos(phi);
-            float p_y = rho * sin(phi);
-            float v  = sqrt(rho_dot * cos(phi) * rho_dot * cos(phi) + rho_dot * sin(phi) * rho_dot * sin(phi));
-            float si = 0;
-            float si_dot = 0;
+            const float p_x = rho * cos(phi);
+            const float p_y = rho * sin(phi);
+            const float v  = sqrt(rho_dot * cos(phi) * rho_dot * cos(phi) + rho_dot * sin(phi) * rho_dot * sin(phi));
+            const float si = 0;
+            const float si_dot = 0;
 
             xi << p_x, p_y, v, si, si_dot;
             x_ = xi;
-
-            // Initialise state covariance matrix.
-            // Lower uncertainty for px and py states but greater uncertainty to v, si and si_dot
-            P_ <<   1, 0, 0, 0, 0,
-                    0, 1, 0, 0, 0,
-                    0, 0, 1, 0, 0,
-                    0, 0, 0, 1, 0,
-                    0, 0, 0, 0, 1;
 
         }
 
@@ -221,13 +225,13 @@ void UKF::Prediction(double delta_t) {
     for (int i = 0; i < 2 * n_aug_ + 1; i++)
     {
         //extract values for better readability
-        double p_x      = Xsig_aug(0, i);
-        double p_y      = Xsig_aug(1, i);
-        double v        = Xsig_aug(2, i);
-        double yaw      = Xsig_aug(3, i);
-        double yawd     = Xsig_aug(4, i);
-        double nu_a     = Xsig_aug(5, i);
-        double nu_yawdd = Xsig_aug(6, i);
+        const double p_x      = Xsig_aug(0, i);
+        const double p_y      = Xsig_aug(1, i);
+        const double v        = Xsig_aug(2, i);
+        const double yaw      = Xsig_aug(3, i);
+        const double yawd     = Xsig_aug(4, i);
+        const double nu_a     = Xsig_aug(5, i);
+        const double nu_yawdd = Xsig_aug(6, i);
 
         //predicted state values
         double px_p, py_p;
@@ -279,9 +283,7 @@ void UKF::Prediction(double delta_t) {
         // state difference
         VectorXd x_diff = Xsig_pred_.col(i) - x_;
         //angle normalization
-        while (x_diff(3)> M_PI) x_diff(3) -= 2.*M_PI;
-        while (x_diff(3)<-M_PI) x_diff(3) += 2.*M_PI;
-
+        NormalizeAngle(x_diff(3));
         P_ = P_ + weights_(i) * x_diff * x_diff.transpose();
     }
 
@@ -311,8 +313,8 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
     for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
 
         // extract values for better readability
-        double p_x = Xsig_pred_(0, i);
-        double p_y = Xsig_pred_(1, i);
+        const double p_x = Xsig_pred_(0, i);
+        const double p_y = Xsig_pred_(1, i);
 
         // measurement model
         Zsig(0, i) = p_x;
@@ -337,11 +339,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
         S = S + weights_(i) * z_diff * z_diff.transpose();
     }
 
-    //add measurement noise covariance matrix
-    MatrixXd R = MatrixXd(n_z, n_z);
-    R << std_laspx_*std_laspx_, 0,
-            0, std_laspy_*std_laspy_;
-    S = S + R;
+    S = S + R_laser_;
 
     //create matrix for cross correlation Tc
     MatrixXd Tc = MatrixXd(n_x_, n_z);
@@ -398,18 +396,23 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
 
         // extract values for better readability
-        double p_x = Xsig_pred_(0, i);
-        double p_y = Xsig_pred_(1, i);
-        double v   = Xsig_pred_(2, i);
-        double yaw = Xsig_pred_(3, i);
+        const double p_x = Xsig_pred_(0, i);
+        const double p_y = Xsig_pred_(1, i);
+        const double v   = Xsig_pred_(2, i);
+        const double yaw = Xsig_pred_(3, i);
 
-        double v1 = cos(yaw)*v;
-        double v2 = sin(yaw)*v;
+        const double v1 = cos(yaw)*v;
+        const double v2 = sin(yaw)*v;
 
         // measurement model
-        Zsig(0, i) = sqrt(p_x*p_x + p_y*p_y);                       //rho
-        Zsig(1, i) = atan2(p_y, p_x);                               //phi
-        Zsig(2, i) = (p_x*v1 + p_y*v2) / sqrt(p_x*p_x + p_y*p_y);   //rho_dot
+        const double rho = sqrt(p_x*p_x + p_y*p_y);                       //rho
+        const double phi = atan2(p_y, max(EPS,p_x));                       //phi
+        const double rho_dot = (p_x*v1 + p_y*v2) / max(EPS,rho);   //rho_dot
+
+        Zsig(0, i) = rho;
+        Zsig(1, i) = phi;
+        Zsig(2, i) = rho_dot;
+
     }
 
     //mean predicted measurement
@@ -433,12 +436,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
         S = S + weights_(i) * z_diff * z_diff.transpose();
     }
 
-    //add measurement noise covariance matrix
-    MatrixXd R = MatrixXd(n_z, n_z);
-    R <<    std_radr_*std_radr_, 0,                                           0,
-            0,                   std_radphi_*std_radphi_,                     0,
-            0,                   0,                                           std_radrd_*std_radrd_;
-    S = S + R;
+    S = S + R_radar_;
 
     //create matrix for cross correlation Tc
     MatrixXd Tc = MatrixXd(n_x_, n_z);

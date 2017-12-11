@@ -74,6 +74,12 @@ public:
     ///* NIS for radar
     float NIS_radar_;
 
+    ///* Lidar measurement noise covariance matrix
+    MatrixXd R_laser_;
+
+    ///* Radar measurement noise covriance matrix
+    MatrixXd R_radar_;
+
 
     /**
      * Constructor
