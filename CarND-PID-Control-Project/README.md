@@ -18,7 +18,7 @@ The differential gain allows the PID controller to take into account the rate of
 The integral gain allows the PID controller to reduce the systematic bias by applying a correction based on accumulated cross track error over a period of time.
 
 ## Hyperparameter Tuning
-I started optimisations with the systematiic twiddle approach as mentioned in lectures but the results were quickly lead to unrecoverable crashes of the car and required a manual restart of the simulator. At the end, I decided to take a simpler trial and error method as they helped gaining an intuitive understanding of the importance of different parameters and their contributions. The approach I roghly followed was: 
+I started optimisations with the systematiic twiddle approach as mentioned in lectures but the results were quickly leading to unrecoverable crashes of the car which required a manual restart of the simulator. In the end, I decided to take a simpler trial and error method as they helped gaining an intuitive understanding of the importance of different parameters and their contributions. The approach I roghly followed was: 
 
 1. Start with  K_i and K_d = 0 , and gradually increase K_p to get a stable and consistent osciallting run
 2. Increase K_d until oscillations subside
