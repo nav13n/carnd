@@ -18,21 +18,15 @@ The goals / steps of this project are the following:
 [LossVisualisation]: ./examples/LossVisualisation.png "Loss Visualisation"
 [Video]: ./output.mp4 "Track1"
 
-## Rubric Points
-###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
+####1. Project Structure
 
----
-###Files Submitted & Code Quality
-
-####1. Submission includes all required files and can be used to run the simulator in autonomous mode
-
-My project includes the following files:
+The project directory contains the following files:
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup.md  summarizing the results
 
-####2. Submission includes functional code
+####2. Run
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
@@ -42,36 +36,34 @@ python drive.py model.h5
 
 The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
 
-###Model Architecture and Training Strategy
-
-####1. An appropriate model architecture has been employed
+####4. Model Architecture and Training Strategy
 
 I chose to use [comma.ai](https://github.com/commaai/research/blob/master/train_steering_model.py) model (Line 319-340) due to its simplicity. The network structure can be summarized as follows:
 
-A normalization layer on the top of the network to normalize the input images.
-Convolutional layer, 16 feature maps with a size of 8×8, an Exponential Linear Unit(elu) activation function.
-Convolutional layer, 32 feature maps with a size of 5×5, an elu activation function.
-Convolutional layer, 64 feature maps with a size of 5×5, an elu activation function.
-Flatten layer.
-Dropout set to 20%.
-ELU non-linearity layer
-Fully connected layer with 512 units and a elu activation function.
-Dropout set to 50%.
-ELU non-linearity layer
-Fully connected output layer with 1 unit and no activation function as this is a regression problem, not classification.
+- A normalization layer on the top of the network to normalize the input images.
+- Convolutional layer, 16 feature maps with a size of 8×8, an Exponential Linear Unit(elu) activation function.
+- Convolutional layer, 32 feature maps with a size of 5×5, an elu activation function.
+- Convolutional layer, 64 feature maps with a size of 5×5, an elu activation function.
+- Flatten layer.
+- Dropout set to 20%.
+- ELU non-linearity layer
+- Fully connected layer with 512 units and a elu activation function.
+- Dropout set to 50%.
+- ELU non-linearity layer
+- Fully connected output layer with 1 unit and no activation function as this is a regression problem, not classification.
 
 
-####2. Attempts to reduce overfitting in the model
+####5. Reducing Overfitting
 
 The model contains dropout layers in order to reduce overfitting (model.py (model.py lines 333 and 336).  
 In addition to that, the model was trained and validated on different data sets and each epochs was fed a randomly augmented data set of 20000 images using generators to avoid overfitting. 
 (model.py line 354-358)
 
-####3. Model parameter tuning
+####3. Model Parameter Tuning
 
 The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 340).
 
-####4. Appropriate training data
+####6. Training data
 
 Training data was chosen to keep the vehicle driving on the road. 
 I used a combination of center lane driving, recovering from the left and right sides of the road to simulate proper driving. 
@@ -80,7 +72,7 @@ For details about how I created the training data, see the next section.
 
 ###Model Architecture and Training Strategy
 
-####1. Solution Design Approach
+####7. Solution Design Approach
 
 As a first step, I created a bare-bones regression model with just one flattening and  dense layer with two epoch to get a feel of things. It barely worked but at least the car was moving.
 Next, I tried with  LeNet](http://yann.lecun.com/exdb/lenet/) model with three epochs and the training data provided by Udacity.
