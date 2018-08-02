@@ -1,4 +1,4 @@
-**Behavioral Cloning Project**
+### **Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior
@@ -18,7 +18,9 @@ The goals / steps of this project are the following:
 [LossVisualisation]: ./examples/LossVisualisation.png "Loss Visualisation"
 [Video]: ./output.mp4 "Track1"
 
-####1. Project Structure
+### 1. Project Setup
+
+#### a. Setup
 
 The project directory contains the following files:
 * model.py containing the script to create and train the model
@@ -26,18 +28,17 @@ The project directory contains the following files:
 * model.h5 containing a trained convolution neural network 
 * writeup.md  summarizing the results
 
-####2. Run
+The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+
+#### b. Run
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
 ```
 
-####3. Submission code is usable and readable
+### 2. Model Architecture and Training Strategy
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
-
-####4. Model Architecture and Training Strategy
-
+#### a. Model Architecture
 I chose to use [comma.ai](https://github.com/commaai/research/blob/master/train_steering_model.py) model (Line 319-340) due to its simplicity. The network structure can be summarized as follows:
 
 - A normalization layer on the top of the network to normalize the input images.
@@ -53,26 +54,43 @@ I chose to use [comma.ai](https://github.com/commaai/research/blob/master/train_
 - Fully connected output layer with 1 unit and no activation function as this is a regression problem, not classification.
 
 
-####5. Reducing Overfitting
+#### b. Reducing Overfitting
 
 The model contains dropout layers in order to reduce overfitting (model.py (model.py lines 333 and 336).  
 In addition to that, the model was trained and validated on different data sets and each epochs was fed a randomly augmented data set of 20000 images using generators to avoid overfitting. 
 (model.py line 354-358)
 
-####3. Model Parameter Tuning
+#### c. Model Parameter Tuning
 
 The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 340).
 
-####6. Training data
+#### d. Training data
 
 Training data was chosen to keep the vehicle driving on the road. 
 I used a combination of center lane driving, recovering from the left and right sides of the road to simulate proper driving. 
 
-For details about how I created the training data, see the next section. 
+Instead of trying to gather my own driving data, I decided to use the data provided by Udacity as a personal challenge. 
+The dataset contains around 8036 frames of car driving on track 1
+Each frame contains images from left, right, center camera, and corresponding steering, brake and throttle values. 
 
-###Model Architecture and Training Strategy
+Using the 8036 samples of driving_log.csv file, I created an image_frames list and corresponding steering_angles list. Each element of image_frames list contains a list of center, left, right camera image files name in the same order. (line 41-63, model.py)
+This dataset was randomly shuffled and further split into train and validation data set with 90-10 split ratio.
 
-####7. Solution Design Approach
+To efficiently train the network without loading all the images in one go, I made use of keras generators to generate data on the fly for each batch of epoch.
+For each batch of the training epoch, the generator function randomly creates augmented training data for each slot of the batch size
+,by picking a random input image frame and steering angle, loading one of the images among left, centre right with adjusted angle,
+and and randomly applying augmentation functions on the loaded image frame and adjusted angle. (line 297-313, model.py)
+The preprocessing of cropping and resizing the data was also performed in the generator function itself.
+
+To make sure model never sees the validation set data, two different generator functions were created for training and validation set
+using the training and validation set data.
+
+The train and validation generator were finally used with keras fit_generator function train the model for 20000 epoch of batch size 32.
+
+Visualising the generated training set shows pretty balanced dataset that allowed model to generalise well.
+![FinalDataDistribution]. 
+
+### 3. Solution Design Approach
 
 As a first step, I created a bare-bones regression model with just one flattening and  dense layer with two epoch to get a feel of things. It barely worked but at least the car was moving.
 Next, I tried with  LeNet](http://yann.lecun.com/exdb/lenet/) model with three epochs and the training data provided by Udacity.
@@ -97,35 +115,13 @@ It ensured high variance while keeping the memory footprint low. I also reduced 
 raining for 6 epochs with 20000 images per epoch just took around 15 min on an average MacbookPro.
 ![LossVisualisation]
 
-The final step was to run the simulator to see how well the car was driving around track one. A video of teh car driving on the track one is [here](./output.mp4)
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
-
-####2. Final Model Architecture
+### 4. Final Model Architecture and Results
 
 The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
 
 ![Model]
 
-####3. Creation of the Training Set & Training Process
+The final step was to run the simulator to see how well the car was driving around track one. A video of the car driving on the track one is [here](./output.mp4)
+At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
-Instead of trying to gather my own driving data, I decided to use the data provided by Udacity as a personal challenge. 
-The dataset contains around 8036 frames of car driving on track 1
-Each frame contains images from left, right, center camera, and corresponding steering, brake and throttle values. 
-
-Using the 8036 samples of driving_log.csv file, I created an image_frames list and corresponding steering_angles list. Each element of image_frames list contains a list of center, left, right camera image files name in the same order. (line 41-63, model.py)
-This dataset was randomly shuffled and further split into train and validation data set with 90-10 split ratio.
-
-To efficiently train the network without loading all the images in one go, I made use of keras generators to generate data on the fly for each batch of epoch.
-For each batch of the training epoch, the generator function randomly creates augmented training data for each slot of the batch size
-,by picking a random input image frame and steering angle, loading one of the images among left, centre right with adjusted angle,
-and and randomly applying augmentation functions on the loaded image frame and adjusted angle. (line 297-313, model.py)
-The preprocessing of cropping and resizing the data was also performed in the generator function itself.
-
-To make sure model never sees the validation set data, two different generator functions were created for training and validation set
-using the training and validation set data.
-
-The train and validation generator were finally used with keras fit_generator function train the model for 20000 epoch of batch size 32.
-
-Visualising the generated training set shows pretty balanced dataset that allowed model to generalise well.
-![FinalDataDistribution]. 
